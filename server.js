@@ -1,9 +1,12 @@
 const express = require('express') ;
 const bodyParser = require('body-parser') ;
+const bcrypt = require('bcrypt-nodejs') ;
+const cors = require('cors') ;
 
 const app = express() ;
 
 app.use(bodyParser.json());
+app.use(cors());
 
 const databases = {
     users: [
@@ -31,6 +34,16 @@ app.get('/', (req,res) => {
 })
 
 app.post('/signin' , (req,res) => {
+
+    let hash = '$2a$10$LX3Spv3wbh8M.LX3DqeaC.v9ir.YalTI1D62yb2qx.c2tVHef8xO2' ;
+    //Load hash from your password DB.
+    bcrypt.compare("pie", hash, function(err, res) {
+        console.log("first guess ", res) ;
+    });
+    bcrypt.compare("apples", hash, function(err, res) {
+        console.log("second guess ", res) ;
+    });
+
     if(req.body.email === databases.users[0].email && req.body.password === databases.users[0].password)
     {
         res.json("Success Sign In") ;
@@ -38,10 +51,15 @@ app.post('/signin' , (req,res) => {
     else{
         res.status(400).json("error logging in") ;
     }
+    
 })
 
 app.post('/register' , (req,res) => {
     const { name, email, password } = req.body ;
+
+    bcrypt.hash(password, null, null, function(err, hash) {
+        //console.log(hash) ;
+    });
 
     databases.users.push({
         id: '125',
@@ -72,8 +90,9 @@ app.get('/profile/:id' , (req,res) => {
     }
 })
 
-app.post('/image', (req,res) => {
+app.put('/image', (req,res) => {
     const { id } = req.body ;
+    console.log(id) ;
     let found = false ;
 
     databases.users.forEach(user => {
@@ -89,6 +108,10 @@ app.post('/image', (req,res) => {
         res.status(404).json("not found") ;
     }
 })
+
+
+
+
 
 app.listen(3000, ()=>{
     console.log("running") ;

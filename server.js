@@ -38,15 +38,15 @@ app.post('/signin' , (req,res) => {
     let hash = '$2a$10$LX3Spv3wbh8M.LX3DqeaC.v9ir.YalTI1D62yb2qx.c2tVHef8xO2' ;
     //Load hash from your password DB.
     bcrypt.compare("pie", hash, function(err, res) {
-        console.log("first guess ", res) ;
+        //console.log("first guess ", res) ;
     });
     bcrypt.compare("apples", hash, function(err, res) {
-        console.log("second guess ", res) ;
+        //console.log("second guess ", res) ;
     });
 
     if(req.body.email === databases.users[0].email && req.body.password === databases.users[0].password)
     {
-        res.json("Success Sign In") ;
+        res.json(databases.users[0]) ;
     }
     else{
         res.status(400).json("error logging in") ;
@@ -92,7 +92,7 @@ app.get('/profile/:id' , (req,res) => {
 
 app.put('/image', (req,res) => {
     const { id } = req.body ;
-    console.log(id) ;
+    //console.log(id + 'got it') ;
     let found = false ;
 
     databases.users.forEach(user => {
